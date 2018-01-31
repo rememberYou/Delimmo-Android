@@ -57,69 +57,69 @@ public class MainActivity extends AppCompatActivity {
 
     public class DownloadRealEstatesTask extends AsyncTask<String, Void, String> {
 
-        @Override
-    protected String doInBackground(String... params) {
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL("http://192.168.0.12/connect.php");
+	@Override
+	protected String doInBackground(String... params) {
+	    HttpURLConnection urlConnection = null;
+	    try {
+		URL url = new URL("http://192.168.0.12/connect.php");
 
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setDoOutput(true);
-            urlConnection.setDoInput(true);
+		urlConnection = (HttpURLConnection) url.openConnection();
+		urlConnection.setRequestMethod("POST");
+		urlConnection.setDoOutput(true);
+		urlConnection.setDoInput(true);
 
-            OutputStream os = urlConnection.getOutputStream();
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+		OutputStream os = urlConnection.getOutputStream();
+		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
 
-            String data = URLEncoder.encode("root", "UTF-8") + "=" + URLEncoder.encode("root", "UTF-8") + "&"
+		String data = URLEncoder.encode("root", "UTF-8") + "=" + URLEncoder.encode("root", "UTF-8") + "&"
                     + URLEncoder.encode("ihatemaria", "UTF-8") + "=" + URLEncoder.encode("ihatemaria", "UTF-8");
-            bufferedWriter.write(data);
-            bufferedWriter.flush();
-            bufferedWriter.close();
-            os.close();
+		bufferedWriter.write(data);
+		bufferedWriter.flush();
+		bufferedWriter.close();
+		os.close();
 
-            InputStream is = urlConnection.getInputStream();
-            result = readStream(is);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            urlConnection.disconnect();
-        }
-        return result;
+		InputStream is = urlConnection.getInputStream();
+		result = readStream(is);
+	    } catch (MalformedURLException e) {
+		e.printStackTrace();
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    } finally {
+		urlConnection.disconnect();
+	    }
+	    return result;
+	}
+
+	@Override
+	protected void onPostExecute(String result) {
+	    super.onPostExecute(result);
+	    displayMap();
+	}
+
+	public String readStream(InputStream is) {
+	    BufferedReader br = null;
+	    StringBuilder sb = null;
+	    try {
+		String line;
+		br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
+		sb = new StringBuilder();
+		while ((line = br.readLine()) != null) {
+		    sb.append(line + "\n");
+		}
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    } finally {
+		try {
+		    br.close();
+		    is.close();
+
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+	    }
+	    return sb.toString();
+	}
     }
-
-    public String readStream(InputStream is) {
-        BufferedReader br = null;
-        StringBuilder sb = null;
-        try {
-            String line;
-            br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
-            sb = new StringBuilder();
-            while ((line = br.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                br.close();
-                is.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return sb.toString();
-    }
-
-    @Override
-    protected void onPostExecute(String result) {
-        super.onPostExecute(result);
-        displayMap();
-    }
-}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
